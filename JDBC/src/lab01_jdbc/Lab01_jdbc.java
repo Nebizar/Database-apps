@@ -163,7 +163,35 @@ public class Lab01_jdbc {
                 changes += stmt5.executeUpdate();
 				i++;
             }
-			
+            //stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT ID_PRAC, NAZWISKO, ETAT, PLACA_POD FROM PRACOWNICY");
+            while (rs.next()) {
+                System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getInt(4));
+            }
+
+            //ZADANIE 6
+            conn.setAutoCommit(false);
+            long start = System.nanoTime();
+            stmt5 = conn.prepareStatement("INSERT INTO pracownicy(ID_PRAC) VALUES (?)");
+            for(int k=600;k<1600;k++)
+            {
+                pstmt.setInt(1, k);
+                rs = pstmt.executeQuery();
+            }
+            long czas = (System.nanoTime() - start)/1000000;
+            System.out.println("Time: " + czas + "ms");
+            conn.rollback();
+
+            conn.setAutoCommit(true);
+
+            //ZADANIE 7
+            CallableStatement cstmt = conn.prepareCall("{? = call ZMIENWIELKOSCLITER(?)}");
+            cstmt.setInt(2, 120);
+            cstmt.registerOutParameter(1, Types.VARCHAR);
+            cstmt.execute();
+            String nazwisko = cstmt.getString(1);
+            System.out.println(nazwisko);
+            System.out.println("1");
             
         } catch (SQLException ex) {
             System.out.println("Bład wykonania polecenia" + ex.toString());

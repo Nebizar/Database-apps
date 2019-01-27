@@ -62,7 +62,32 @@ public class JPAApp1 {
         em.remove(zesp);
         em.remove(zesp2);
         em.getTransaction().commit();*/
-        
+
+        Pracownik newWorker = new Pracownik();
+        newWorker.setIdPrac(300);
+        newWorker.setNazwisko("Kowalski");
+        newWorker.setPlacaPod(BigDecimal.valueOf(450.0));
+
+        em.getTransaction().begin();
+        em.persist(newWorker);
+        em.getTransaction().commit();
+
+        Query query2 = em.createNamedQuery("Pracownik.findAll");
+        List<Pracownik> listaZespolow6 = query2.getResultList();
+        for(Pracownik p : listaZespolow6) {
+            System.out.println("Nazwisko: " + p.getNazwisko() + ", płaca: " + p.getPlacaPod() + ", zespół: " + p.getIdZesp());
+        }
+
+        Query query3 = em.createQuery("UPDATE Pracownik p SET p.placaPod=p.placaPod*1.1 WHERE p.placaPod < ?1");
+        query3.setParameter(1, 3000);
+        em.getTransaction().begin();
+        query3.executeUpdate();
+        em.getTransaction().commit();
+        System.out.println("Done");
+
+        for(Zespol z : listaZespolow5) {
+            System.out.println("Id_zesp: " + z.getIdZesp() + ", nazwa: " + z.getNazwa() + "\n" + z.getPracownikCollection())
+        }
     }
     
 }
